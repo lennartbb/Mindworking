@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mindworking", "Mindworking\Mindworking.csproj", "{B9C94AD9-4067-4334-9399-A735ACBCC1B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mindworking.Test", "Mindworking.Test\Mindworking.Test.csproj", "{456A3818-E549-4C0A-8339-5C6D85F8A00B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9C94AD9-4067-4334-9399-A735ACBCC1B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C94AD9-4067-4334-9399-A735ACBCC1B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C94AD9-4067-4334-9399-A735ACBCC1B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C94AD9-4067-4334-9399-A735ACBCC1B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456A3818-E549-4C0A-8339-5C6D85F8A00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456A3818-E549-4C0A-8339-5C6D85F8A00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456A3818-E549-4C0A-8339-5C6D85F8A00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456A3818-E549-4C0A-8339-5C6D85F8A00B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
