@@ -3,7 +3,7 @@ using Mindworking.Data.CurriculumVitae;
 using Mindworking.Models.CurriculumVitae;
 
 namespace Mindworking.GraphQl.CurriculumVitae;
-
+[GraphQLDescription("Provides mutation operations for managing curriculum vitae data.")]
 public class Mutation
 {
     [GraphQLDescription("Adds a new candidate to the database.")]

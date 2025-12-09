@@ -27,12 +27,12 @@ namespace Mindworking.Test.CurriculumVitaeTests
 
             // Act
             var result = await mutation.AddCandidateAsync(input, db);
+            var stored = await db.Candidates.FindAsync(result.Id);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Test User", result.Name);
-
-            var stored = await db.Candidates.FindAsync(result.Id);
+            
             Assert.NotNull(stored);
             Assert.Equal("test@example.com", stored.Email);
         }
@@ -40,17 +40,17 @@ namespace Mindworking.Test.CurriculumVitaeTests
         [Fact]
         public async Task UpdateCandidateAsync_UpdatesFields()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
-            // seed candidate
             var candidate = new Candidate { Name = "Initial", Email = "a@b.com" };
             db.Candidates.Add(candidate);
             await db.SaveChangesAsync();
 
             var mutation = new Mutation();
             var update = new UpdateCandidateInput(candidate.Id, "Updated", "new desc", new DateTime(2000,1,1), "updated@ex.com");
-
+            // Act
             var updated = await mutation.UpdateCandidateAsync(update, db);
-
+            // Assert
             Assert.NotNull(updated);
             Assert.Equal("Updated", updated.Name);
             Assert.Equal("updated@ex.com", updated.Email);
@@ -59,22 +59,25 @@ namespace Mindworking.Test.CurriculumVitaeTests
         [Fact]
         public async Task DeleteCandidateAsync_RemovesCandidate()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
             var candidate = new Candidate { Name = "ToDelete" };
             db.Candidates.Add(candidate);
             await db.SaveChangesAsync();
 
             var mutation = new Mutation();
+            // Act
             var deleted = await mutation.DeleteCandidateAsync(candidate.Id, db);
-
-            Assert.True(deleted);
             var found = await db.Candidates.FindAsync(candidate.Id);
+            // Assert
+            Assert.True(deleted);
             Assert.Null(found);
         }
 
         [Fact]
         public async Task AddProjectAsync_AssociatesWithCompany()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
             var candidate = new Candidate { Name = "C1" };
             var company = new Company { Name = "Co1", Candidate = candidate };
@@ -83,13 +86,16 @@ namespace Mindworking.Test.CurriculumVitaeTests
             await db.SaveChangesAsync();
 
             var mutation = new Mutation();
+            // Act
             var input = new AddProjectInput(candidate.Id, company.Id, "P1", "desc", DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow);
             var project = await mutation.AddProjectAsync(input, db);
-
+            
+            var stored = await db.Projects.FindAsync(project.Id);
+            
+            // Assert
             Assert.NotNull(project);
             Assert.Equal(company.Id, project.CompanyId);
-            // ensure link exists in DB
-            var stored = await db.Projects.FindAsync(project.Id);
+            
             Assert.NotNull(stored);
             Assert.Equal("P1", stored.Title);
             Assert.Equal(company.Id, stored.CompanyId);
@@ -98,6 +104,7 @@ namespace Mindworking.Test.CurriculumVitaeTests
         [Fact]
         public async Task AssignAndRemoveSkillToProject_Works()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
             var candidate = new Candidate { Name = "C2" };
             db.Candidates.Add(candidate);
@@ -108,18 +115,19 @@ namespace Mindworking.Test.CurriculumVitaeTests
             db.Projects.Add(project);
             db.Skills.Add(skill);
             await db.SaveChangesAsync();
-
+            
             var mutation = new Mutation();
+            // Act
             var assigned = await mutation.AssignSkillToProjectAsync(project.Id, skill.Id, db);
-            Assert.True(assigned);
 
             var ps = db.ProjectSkills.SingleOrDefault(x => x.ProjectId == project.Id && x.SkillId == skill.Id);
-            Assert.NotNull(ps);
-
             var removed = await mutation.RemoveSkillFromProjectAsync(project.Id, skill.Id, db);
-            Assert.True(removed);
-
             var psAfter = await db.ProjectSkills.FindAsync(project.Id, skill.Id);
+            
+            // Assert
+            Assert.True(assigned);
+            Assert.NotNull(ps);
+            Assert.True(removed);
             Assert.Null(psAfter);
         }
     }

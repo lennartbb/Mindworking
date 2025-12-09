@@ -31,9 +31,8 @@ namespace Mindworking.Test.CurriculumVitaeTests
         [Fact]
         public void CompositeKeyAndRelations_WorkWithSqlite()
         {
+            // Arrange
             using var db = new CurriculumVitaeDbContext(_options);
-
-            // seed candidate, project and skill
             var candidate = new Candidate { Name = "C" };
             db.Candidates.Add(candidate);
             db.SaveChanges();
@@ -45,13 +44,12 @@ namespace Mindworking.Test.CurriculumVitaeTests
             db.SaveChanges();
 
             var mutation = new Mutation();
-
-            // call the mutation that creates ProjectSkill association
+            // Act
             var assigned = mutation.AssignSkillToProjectAsync(project.Id, skill.Id, db).GetAwaiter().GetResult();
-            Assert.True(assigned);
-
-            // verify composite key row exists
             var ps = db.ProjectSkills.Find(project.Id, skill.Id);
+
+            // Assert
+            Assert.True(assigned);
             Assert.NotNull(ps);
             Assert.Equal(project.Id, ps.ProjectId);
             Assert.Equal(skill.Id, ps.SkillId);

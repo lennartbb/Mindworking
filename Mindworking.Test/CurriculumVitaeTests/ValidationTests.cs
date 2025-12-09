@@ -19,33 +19,38 @@ namespace Mindworking.Test.CurriculumVitaeTests
         [Fact]
         public async Task AddCompany_ForNonExistingCandidate_ReturnsNullOrThrows()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
             var mutation = new Mutation();
             var input = new AddCompanyInput(9999, "NoCandidateCo", null, null, null, null);
-
-            // Implementation may either throw or return null; accept both behaviors.
+            
+            // Act // Assert
             try
             {
                 var result = await mutation.AddCompanyAsync(input, db);
-                Assert.True(result == null || result.CandidateId != 9999, "Expected no association to non-existing candidate");
+                Assert.True(result is not { CandidateId: 9999 }, "Expected no association to non-existing candidate");
             }
-            catch (ArgumentException) { /* acceptable */ }
-            catch (InvalidOperationException) { /* acceptable */ }
+            catch (ArgumentException) { }
+            catch (InvalidOperationException) { }
         }
 
         [Fact]
         public async Task AddEducation_WithMissingCandidateId_FailsGracefully()
         {
+            // Arrange
             await using var db = CreateInMemoryContext();
             var mutation = new Mutation();
             var input = new AddEducationInput(12345, "Inst", "Degree", null, null, "desc");
-
+            // Act // Assert
             try
             {
                 var result = await mutation.AddEducationAsync(input, db);
-                Assert.True(result == null || result.CandidateId != 12345, "Expected failure when candidate does not exist");
+                Assert.True(result is not { CandidateId: 12345 }, "Expected failure when candidate does not exist");
             }
-            catch (Exception) when (true) { /* Accept any well-formed failure */ }
+            catch (Exception e)
+            {
+                Assert.True(e is ArgumentException or InvalidOperationException, "Expected specific exception types");
+            }
         }
     }
 }

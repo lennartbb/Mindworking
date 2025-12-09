@@ -2,7 +2,7 @@
 using Mindworking.Models.CurriculumVitae;
 
 namespace Mindworking.GraphQl.CurriculumVitae;
-
+[GraphQLDescription("The query type for Curriculum Vitae data.")]
 public class Query
 {
     [UseFirstOrDefault]
